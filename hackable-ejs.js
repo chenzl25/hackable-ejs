@@ -1,3 +1,4 @@
+var file_path_stack = [__dirname];
 function compile(template) {
   if (!template) return () => null;
   // Would be used by compile_token_by_token
@@ -95,25 +96,31 @@ function compile(template) {
     return src_code = pre + src_code + suf;
   }
   function check_include(str) {
-    var include;
+    var include_pattern_result;
     var include_template;
-    if ((include = str.match(/^\s*include\s*\(\s*(\S+?)\s*,\s*(\S+?)\s*\)/))) {
-      include_template = do_include(include[1].replace(/^"(.+)"$/,'$1').replace(/^'(.+)'$/,'$1'));
+    var result;
+    if ((include_pattern_result = str.match(/^\s*include\s*\(\s*(\S+?)\s*,\s*(\S+?)\s*\)/))) {
+      include_template = do_include(include_pattern_result[1].replace(/^"(.+)"$/,'$1').replace(/^'(.+)'$/,'$1'));
       var render = compile(include_template);
-      var run_time_imm_render = "(" + render.toString() + ")(" + include[2] + ")";
-      return "; __append(" + run_time_imm_render + ")" + "\n";
-    } else if ((include = str.match(/^\s*include\s*\(\s*(\S+)\s*\)/))) {
-      include_template = do_include(include[1].replace(/^"(.+)"$/,'$1').replace(/^'(.+)'$/,'$1'));
-      return "; __append(`" + compile(include_template)() + "`)" + "\n";
+      var run_time_imm_render = "(" + render.toString() + ")(" + include_pattern_result[2] + ")";
+      result = "; __append(" + run_time_imm_render + ")" + "\n";
+      file_path_stack.pop();
+    } else if ((include_pattern_result = str.match(/^\s*include\s*\(\s*(\S+)\s*\)/))) {
+      include_template = do_include(include_pattern_result[1].replace(/^"(.+)"$/,'$1').replace(/^'(.+)'$/,'$1'));
+      result = "; __append(`" + compile(include_template)() + "`)" + "\n";
+      file_path_stack.pop();
     } else {
-      return str;
+      result = str;
     }
+    return result;
   }
   function do_include(file_path) {
     var include_template;
     try {
       var path = require('path');
-      var full_path = path.resolve(__dirname, file_path);
+      var full_path = path.resolve(file_path_stack[file_path_stack.length -1], file_path);
+      var dirname = path.dirname(full_path);
+      file_path_stack.push(dirname);
       var filename = full_path.replace(/^.*[\\\/]/, '');
       var ext = path.extname(filename);
       if (!ext) {

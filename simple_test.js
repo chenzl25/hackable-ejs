@@ -3,7 +3,8 @@ var template = `
 <h1>Users</h1>
 
 <% function user(user) { %>
-  <li><strong><%= user.name %></strong> is a <%= user.age %> year old <%= user.species %>.</li>
+  <li>
+    <strong><%= user.name %></strong> is a <%= user.age %> year old <%= user.species %>.</li>
 <% } %>
 
 <ul>
@@ -11,6 +12,7 @@ var template = `
 </ul>
 
 "`;
+
 
 var data = {
   users: [
