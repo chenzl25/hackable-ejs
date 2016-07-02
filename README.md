@@ -1,6 +1,6 @@
 # hackable-ejs
 
-Only in 130 line and easy for you to hack.
+About 140 line and easy for you to hack.
 
 Support:
 1. <% %> and <%= %> label

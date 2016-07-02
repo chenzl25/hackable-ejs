@@ -1,18 +1,13 @@
 var ejs = require("./hackable-ejs");
+
+
 var template = `
-<h1>Users</h1>
-
-<% function user(user) { %>
-  <li>
-    <strong><%= user.name %></strong> is a <%= user.age %> year old <%= user.species %>.</li>
-<% } %>
-
 <ul>
-  <% users.map(user) %>
+  <% for (var i = 0; i < users.length; i++) { %>
+    <li> users.name </li>
+  <% } %>
 </ul>
-
-"`;
-
+`;
 
 var data = {
   users: [
