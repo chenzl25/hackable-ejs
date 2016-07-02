@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="hackable-ejs.js"></script>
+  
+</head>
+<body>
+  <div id="container"></div>
+</body>
+<script>
+    template = `
+    <div>
+      <div>
+        <ul>
+          <% students.map(student) %>
+        </ul>
+      </div>
+      <% function student(student) { %>
+        <p><%= student.name %></p>
+        <span><%= student.age %></span>
+        <p>Hobby: <%= student.hobby %></p>
+        <% var data = {luckyNumber: student.luckyNumber}; %>
+      <% } %>
+    </div>
+    `;
+
+    data = {
+      students: [
+        { name: 'Tobi', age: 16, hobby: 'Computer' , luckyNumber: [1,3,5]}
+      , { name: 'Loki', age: 17, hobby: 'Physics'  , luckyNumber: [2,4,6]}
+      , { name: 'Dylan',age: 18, hobby: 'Math'     , luckyNumber: [3,1,4]}
+      , { name: 'Jane', age: 19, hobby: 'English'  , luckyNumber: [7,8,9]}
+      ]
+    }
+
+    var render = compile(template);
+    var result = render(data);
+    document.getElementById('container').innerHTML = result;
+  </script>
+</html>
